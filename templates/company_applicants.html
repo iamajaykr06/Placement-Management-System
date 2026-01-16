@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Applicants</h2>
+
+{% if applicants %}
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Applied At</th>
+    </tr>
+
+    {% for a in applicants %}
+    <tr>
+        <td>{{ a.student_name }}</td>
+        <td>{{ a.student_email }}</td>
+        <td>{{ a.status }}</td>
+        <td>{{ a.applied_at }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No applications for this job yet.</p>
+{% endif %}
+
+{% endblock %}

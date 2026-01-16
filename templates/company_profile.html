@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Company Profile</h2>
+
+{% if company %}
+    <p><b>Name:</b> {{ company.company_name }}</p>
+    <p><b>HR Email:</b> {{ company.hr_email }}</p>
+{% else %}
+    <form method="post">
+        <label>
+            <input name="company_name" placeholder="Company Name" required>
+        </label><br><br>
+        <label>
+            <input name="hr_email" placeholder="HR Email" required>
+        </label><br><br>
+        <button type="submit">Save Profile</button>
+    </form>
+{% endif %}
+
+{% endblock %}

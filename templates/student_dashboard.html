@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Student Dashboard</h2>
+<ul>
+    <li><a href="{{ url_for('student_profile') }}">My Profile</a></li>
+    <li><a href="{{url_for('view_jobs')}}">View Jobs</a></li>
+    <li><a href="{{url_for('my_applications')}}">My Applications</a></li>
+</ul>
+{% endblock %}

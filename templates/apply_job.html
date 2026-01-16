@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Apply for Job</h2>
+
+<p><strong>Job Title:</strong> {{ job.title }}</p>
+<p><strong>Eligibility:</strong> {{ job.eligibility }}</p>
+
+<form method="POST">
+    <button type="submit">Confirm Apply</button>
+</form>
+
+<a href="{{ url_for('view_jobs') }}">Back to Jobs</a>
+
+{% endblock %}

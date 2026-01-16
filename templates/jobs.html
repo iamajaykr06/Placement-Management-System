@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Available Jobs</h2>
+
+{% if jobs %}
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Job Title</th>
+        <th>Eligibility</th>
+        <th>Action</th>
+    </tr>
+
+    {% for job in jobs %}
+    <tr>
+        <td>{{ job.title }}</td>
+        <td>{{ job.eligibility }}</td>
+        <td>
+            <a href="/apply/{{ job.id }}">Apply</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No jobs available at the moment.</p>
+{% endif %}
+
+{% endblock %}

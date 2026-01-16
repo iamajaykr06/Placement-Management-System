@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Company Dashboard</h2>
+
+<ul>
+    <li><a href="{{ url_for('company_profile') }}">Company Profile</a></li>
+    <li><a href="{{ url_for('post_job') }}">Post Job</a></li>
+</ul>
+{% endblock %}
