@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Login & Sign up</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='style.css')}}">
 </head>
 <body>
-    <h2>User Registration</h2>
+
+<h2>User Registration</h2>
 
 <form method="POST">
 
@@ -51,5 +53,18 @@
     Already have an account?
     <a href="{{ url_for('auth_routes.login') }}">Login here</a>
 </p>
+
+
+ <h2>Login</h2>
+    <form method="post">
+        <label>
+            <input type="text" name="username" placeholder="Username" required>
+        </label><br><br>
+        <label>
+            <input type="password" name="password" placeholder="Password" required>
+        </label><br><br>
+        <button type="submit">Login</button>
+    </form>
+
 </body>
 </html>

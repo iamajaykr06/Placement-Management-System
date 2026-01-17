@@ -3,27 +3,44 @@
 {% block content %}
 <h2>Student Profile</h2>
 
-{% if profile %}
-    <p><b>Name:</b> {{ profile.name }}</p>
-    <p><b>Email:</b> {{ profile.email }}</p>
-    <p><b>Course:</b> {{ profile.course }}</p>
-    <p><b>CGPA:</b> {{ profile.cgpa }}</p>
-{% else %}
-    <form method="post">
-        <label>
-            <input name="name" placeholder="Name" required>
-        </label><br><br>
-        <label>
-            <input name="email" placeholder="Email" required>
-        </label><br><br>
-        <label>
-            <input name="course" placeholder="Course" required>
-        </label><br><br>
-        <label>
-            <input name="cgpa" placeholder="CGPA" required>
-        </label><br><br>
-        <button type="submit">Save Profile</button>
-    </form>
-{% endif %}
+<form method="post">
+    <label>
+        <input
+            name="name"
+            placeholder="Name"
+            value="{{ profile.name }}"
+            required
+        >
+    </label><br><br>
+
+    <label>
+        <input
+            name="email"
+            placeholder="Email"
+            value="{{ profile.email }}"
+            required
+        >
+    </label><br><br>
+
+    <label>
+        <input
+            name="course"
+            placeholder="Course"
+            value="{{ profile.course }}"
+            required
+        >
+    </label><br><br>
+
+    <label>
+        <input
+            name="cgpa"
+            placeholder="CGPA"
+            value="{{ profile.cgpa }}"
+            required
+        >
+    </label><br><br>
+
+    <button type="submit">Update Profile</button>
+</form>
 
 {% endblock %}

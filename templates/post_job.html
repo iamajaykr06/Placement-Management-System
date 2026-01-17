@@ -16,7 +16,7 @@
 <ul>
 {% for job in jobs %}
     <li>{{ job.title }} – {{ job.eligibility }}</li>
-    <li><a href="{{ url_for('view_applicants', job_id=job.id) }}">View Applicants</a></li>
+    <li><a href="{{ url_for('company_routes.view_applicants', job_id=job.id) }}">View Applicants</a></li>
 {% endfor %}
 </ul>
 

@@ -5,9 +5,18 @@
     <title>Placement System</title>
 </head>
 <body>
+
 <nav>
-    <a href="{{ url_for('dashboard') }}">Dashboard</a> |
-    <a href="{{ url_for('logout') }}">Logout</a>
+    {% if session.get("role") == "admin" %}
+        <a href="{{ url_for('admin_routes.admin_dashboard') }}">Dashboard</a>
+    {% elif session.get("role") == "company" %}
+        <a href="{{ url_for('company_routes.company_dashboard') }}">Dashboard</a>
+    {% elif session.get("role") == "student" %}
+        <a href="{{ url_for('student_routes.student_dashboard') }}">Dashboard</a>
+    {% endif %}
+
+    |
+    <a href="{{ url_for('auth_routes.logout') }}">Logout</a>
 </nav>
 
 <hr>

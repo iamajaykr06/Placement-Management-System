@@ -2,41 +2,53 @@ from db import get_db_connection
 
 # get user_id of logged user by username
 
-def get_user_id_by_username(username):
+def get_student_id_by_user_id(user_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute(
-        "SELECT id FROM users WHERE username = %s",
-        (username,)
+        "SELECT id FROM students WHERE user_id = %s",
+        (user_id,)
     )
-    user = cursor.fetchone()
+
+    row = cursor.fetchone()
+
     cursor.close()
     conn.close()
-    return user["id"] if user else None
+
+    return row["id"] if row else None
 
 # To save the data of student
-def save_student_profile(user_id: object, name: object, email: object, course: object, cgpa: object) -> None:
-    """
 
-    :rtype: None
-    """
+def save_student_profile(user_id, name, email, course, cgpa):
     conn = get_db_connection()
-    cursor = conn.cursor()
+    cur = conn.cursor()
 
-    cursor.execute(
-        "INSERT INTO students (user_id,name,email,course,cgpa) VALUES (%s, %s, %s, %s)",
-        (user_id,name, email, course, cgpa)
+    cur.execute(
+        """
+        INSERT INTO students (user_id, name, email, course, cgpa)
+        VALUES (%s, %s, %s, %s, %s)
+        ON DUPLICATE KEY UPDATE
+            name=%s,
+            email=%s,
+            course=%s,
+            cgpa=%s
+        """,
+        (
+            user_id, name, email, course, cgpa,
+            name, email, course, cgpa
+        )
     )
+
     conn.commit()
-    cursor.close()
+    cur.close()
     conn.close()
-    
+
 # To show student profile details
 
 def get_student_profile(user_id):
     conn = get_db_connection()
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True,buffered=True)
     
     cursor.execute(
         "SELECT * FROM students WHERE user_id = %s",
