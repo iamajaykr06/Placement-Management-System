@@ -10,6 +10,16 @@ def get_user_by_email(email):
     conn.close()
     return user
 
+def get_user_by_id(user_id):
+    """Get user by ID"""
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True, buffered=True)
+    cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
+    user = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return user
+
 
 def create_user(username, email, password_hash, role):
     conn = get_db_connection()

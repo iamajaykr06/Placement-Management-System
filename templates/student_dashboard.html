@@ -1,9 +1,68 @@
 {% extends "base.html" %}
+{% block title %}Student Dashboard - Placement System{% endblock %}
+
 {% block content %}
-<h2>Student Dashboard</h2>
-<ul>
-    <li><a href="{{ url_for('student_routes.student_profile') }}">My Profile</a></li>
-    <li><a href="{{url_for('student_routes.view_jobs')}}">View Jobs</a></li>
-    <li><a href="{{url_for('student_routes.my_applications')}}">My Applications</a></li>
-</ul>
+<div class="card">
+    <div class="card-header">
+        <h2>Welcome to Your Dashboard</h2>
+        <p style="color: var(--text-secondary);">Manage your profile, browse jobs, and track applications</p>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <h3>{{ applications_count|default(0) }}</h3>
+            <p>Total Applications</p>
+        </div>
+        <div class="stat-card" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            <h3>{{ pending_applications|default(0) }}</h3>
+            <p>Pending Applications</p>
+        </div>
+        <div class="stat-card" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+            <h3>{{ active_jobs|default(0) }}</h3>
+            <p>Active Jobs</p>
+        </div>
+    </div>
+
+    <div class="grid grid-2">
+        <div class="card">
+            <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Quick Actions</h3>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <a href="{{ url_for('student_routes.view_jobs') }}" class="btn btn-primary">
+                    Browse Available Jobs
+                </a>
+                <a href="{{ url_for('student_routes.my_applications') }}" class="btn btn-outline">
+                    View My Applications
+                </a>
+                <a href="{{ url_for('student_routes.student_profile') }}" class="btn btn-outline">
+                    Update Profile
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Profile Status</h3>
+            {% if profile %}
+                {% if profile.name and profile.course %}
+                    <div class="alert alert-success">
+                        <strong>✓ Profile Complete</strong><br>
+                        Your profile is up to date and ready for job applications.
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        <strong>⚠ Profile Incomplete</strong><br>
+                        Please complete your profile to apply for jobs.
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="alert alert-info">
+                    <strong>ℹ Setup Required</strong><br>
+                    Complete your profile to get started.
+                </div>
+            {% endif %}
+            <a href="{{ url_for('student_routes.student_profile') }}" class="btn btn-secondary" style="width: 100%; margin-top: 1rem;">
+                {% if profile and profile.name %}Update{% else %}Complete{% endif %} Profile
+            </a>
+        </div>
+    </div>
+</div>
 {% endblock %}

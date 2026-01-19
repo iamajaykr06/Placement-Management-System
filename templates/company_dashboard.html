@@ -1,10 +1,56 @@
 {% extends "base.html" %}
+{% block title %}Company Dashboard - Placement System{% endblock %}
 
 {% block content %}
-<h2>Company Dashboard</h2>
+<div class="card">
+    <div class="card-header">
+        <h2>Company Dashboard</h2>
+        <p style="color: var(--text-secondary);">Manage your company profile and job postings</p>
+    </div>
 
-<ul>
-    <li><a href="{{ url_for('company_routes.company_profile') }}">Company Profile</a></li>
-    <li><a href="{{ url_for('company_routes.post_job') }}">Post Job</a></li>
-</ul>
+    <div class="stats">
+        <div class="stat-card">
+            <h3>{{ jobs_count|default(0) }}</h3>
+            <p>Total Jobs Posted</p>
+        </div>
+        <div class="stat-card" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            <h3>{{ active_jobs_count|default(0) }}</h3>
+            <p>Active Jobs</p>
+        </div>
+        <div class="stat-card" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+            <h3>{{ total_applicants|default(0) }}</h3>
+            <p>Total Applicants</p>
+        </div>
+    </div>
+
+    <div class="grid grid-2">
+        <div class="card">
+            <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Quick Actions</h3>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <a href="{{ url_for('company_routes.post_job') }}" class="btn btn-primary">
+                    Post New Job
+                </a>
+                <a href="{{ url_for('company_routes.company_profile') }}" class="btn btn-outline">
+                    Update Company Profile
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Company Information</h3>
+            {% if company %}
+                <p><strong>Company Name:</strong> {{ company.company_name }}</p>
+                <p><strong>HR Email:</strong> {{ company.hr_email }}</p>
+            {% else %}
+                <div class="alert alert-info">
+                    <strong>ℹ Setup Required</strong><br>
+                    Complete your company profile to get started.
+                </div>
+            {% endif %}
+            <a href="{{ url_for('company_routes.company_profile') }}" class="btn btn-secondary" style="width: 100%; margin-top: 1rem;">
+                {% if company %}Update{% else %}Complete{% endif %} Profile
+            </a>
+        </div>
+    </div>
+</div>
 {% endblock %}

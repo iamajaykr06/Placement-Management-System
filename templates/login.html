@@ -2,21 +2,249 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Placement System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .auth-container {
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .auth-card {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            width: 100%;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .auth-card h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .auth-card .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem 1.25rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+        
+        .password-toggle {
+            position: relative;
+        }
+        
+        .password-toggle-btn {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+        }
+        
+        .password-toggle-btn:hover {
+            color: var(--primary-color);
+        }
+        
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+        
+        .auth-links {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .auth-links p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .auth-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .auth-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 2rem 0;
+            color: var(--text-secondary);
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .divider span {
+            padding: 0 1rem;
+        }
+        
+        .quick-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+        
+        .quick-link {
+            padding: 0.5rem 1rem;
+            background: var(--bg-color);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .quick-link:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+    </style>
 </head>
 <body>
-    <h2>Login</h2>
+    <nav>
+        <div class="container">
+            <a href="/" style="font-size: 1.25rem; font-weight: 700;">🎓 Placement System</a>
+            <a href="{{ url_for('auth_routes.register_student') }}">Register as Student</a>
+            <a href="{{ url_for('auth_routes.register_company') }}">Register as Company</a>
+        </div>
+    </nav>
 
-    <form method="post">
-        <label>
-            <input type="email" name="email" placeholder="Email" required>
-        </label><br><br>
+    <div class="auth-container">
+        <div class="auth-card">
+            <h2>Welcome Back!</h2>
+            <p class="subtitle">Login to access your dashboard</p>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
 
-        <label>
-            <input type="password" name="password" placeholder="Password" required>
-        </label><br><br>
+            <form method="post" id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email"
+                        name="email" 
+                        placeholder="Enter your email" 
+                        required
+                        autofocus
+                    >
+                </div>
 
-        <button type="submit">Login</button>
-    </form>
+                <div class="form-group password-toggle">
+                    <label for="password">Password</label>
+                    <input 
+                        type="password" 
+                        id="password"
+                        name="password" 
+                        placeholder="Enter your password" 
+                        required
+                    >
+                    <button type="button" class="password-toggle-btn" onclick="togglePassword()">👁️</button>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+
+            <div class="auth-links">
+                <p>Don't have an account?</p>
+                <div class="quick-links">
+                    <a href="{{ url_for('auth_routes.register_student') }}" class="quick-link">
+                        Register as Student
+                    </a>
+                    <a href="{{ url_for('auth_routes.register_company') }}" class="quick-link">
+                        Register as Company
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleBtn = document.querySelector('.password-toggle-btn');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.textContent = '👁️';
+            }
+        }
+    </script>
+    <script src="{{ url_for('static', filename='chatbot.js') }}"></script>
 </body>
 </html>

@@ -1,28 +1,98 @@
 {% extends "base.html" %}
+{% block title %}Job Applicants - Placement System{% endblock %}
 
 {% block content %}
-<h2>Applicants</h2>
+<div class="card">
+    <div class="card-header">
+        <h2>Job Applicants</h2>
+        <p style="color: var(--text-secondary);">View and manage applicants for this job posting</p>
+    </div>
 
-{% if applicants %}
-<table border="1" cellpadding="8">
-    <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Status</th>
-        <th>Applied At</th>
-    </tr>
+    {% if applicants %}
+    <div style="display: grid; gap: 1.5rem;">
+        {% for applicant in applicants %}
+        <div class="card" style="border-left: 4px solid var(--primary-color);">
+            <div class="flex-between">
+                <div style="flex: 1;">
+                    <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">
+                        {{ applicant.student_name or 'Not provided' }}
+                    </h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
+                        📧 {{ applicant.student_email }}
+                    </p>
+                    {% if applicant.course %}
+                    <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
+                        📚 Course: {{ applicant.course }}
+                    </p>
+                    {% endif %}
+                    {% if applicant.cgpa %}
+                    <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
+                        📊 CGPA: {{ applicant.cgpa }}
+                    </p>
+                    {% endif %}
+                    {% if applicant.skills %}
+                    <div style="margin-top: 0.5rem;">
+                        <strong>Skills:</strong>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.25rem;">
+                            {% for skill in applicant.skills.split(',') %}
+                            <span class="badge badge-info">{{ skill.strip() }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if applicant.cover_letter %}
+                    <div style="margin-top: 1rem; padding: 1rem; background: #f3f4f6; border-radius: 8px;">
+                        <strong>Cover Letter:</strong>
+                        <p style="margin-top: 0.5rem; color: var(--text-secondary);">{{ applicant.cover_letter }}</p>
+                    </div>
+                    {% endif %}
+                    {% if applicant.linkedin_url or applicant.github_url or applicant.resume_url %}
+                    <div style="margin-top: 1rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                        {% if applicant.linkedin_url %}
+                        <a href="{{ applicant.linkedin_url }}" target="_blank" class="btn btn-outline btn-sm">LinkedIn</a>
+                        {% endif %}
+                        {% if applicant.github_url %}
+                        <a href="{{ applicant.github_url }}" target="_blank" class="btn btn-outline btn-sm">GitHub</a>
+                        {% endif %}
+                        {% if applicant.resume_url %}
+                        <a href="{{ applicant.resume_url }}" target="_blank" class="btn btn-outline btn-sm">Resume</a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div style="text-align: right; margin-left: 2rem;">
+                    {% if applicant.status == 'accepted' %}
+                        <span class="badge badge-success" style="font-size: 1rem; padding: 0.5rem 1rem;">{{ applicant.status|title }}</span>
+                    {% elif applicant.status == 'rejected' %}
+                        <span class="badge badge-danger" style="font-size: 1rem; padding: 0.5rem 1rem;">{{ applicant.status|title }}</span>
+                    {% elif applicant.status == 'shortlisted' %}
+                        <span class="badge badge-info" style="font-size: 1rem; padding: 0.5rem 1rem;">{{ applicant.status|title }}</span>
+                    {% else %}
+                        <span class="badge badge-warning" style="font-size: 1rem; padding: 0.5rem 1rem;">{{ applicant.status|title }}</span>
+                    {% endif %}
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.5rem;">
+                        Applied: {{ applicant.applied_at.strftime('%B %d, %Y') if applicant.applied_at else 'N/A' }}
+                    </p>
+                    {% if applicant.reviewed_at %}
+                    <p style="color: var(--text-secondary); font-size: 0.875rem;">
+                        Reviewed: {{ applicant.reviewed_at.strftime('%B %d, %Y') }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    {% else %}
+    <div class="empty-state">
+        <p style="font-size: 1.25rem; margin-bottom: 0.5rem;">No applicants yet</p>
+        <p style="color: var(--text-secondary);">Students will appear here once they apply for this job</p>
+    </div>
+    {% endif %}
 
-    {% for a in applicants %}
-    <tr>
-        <td>{{ a.student_name }}</td>
-        <td>{{ a.student_email }}</td>
-        <td>{{ a.status }}</td>
-        <td>{{ a.applied_at }}</td>
-    </tr>
-    {% endfor %}
-</table>
-{% else %}
-<p>No applications for this job yet.</p>
-{% endif %}
-
+    <div style="margin-top: 2rem;">
+        <a href="{{ url_for('company_routes.post_job') }}" class="btn btn-outline">Back to Jobs</a>
+    </div>
+</div>
 {% endblock %}

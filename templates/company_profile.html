@@ -1,21 +1,144 @@
 {% extends "base.html" %}
+{% block title %}Company Profile - Placement System{% endblock %}
 
 {% block content %}
-<h2>Company Profile</h2>
+<div class="card">
+    <div class="card-header">
+        <h2>Company Profile</h2>
+        <p style="color: var(--text-secondary);">Complete your company profile to attract the best talent</p>
+    </div>
 
-{% if company %}
-    <p><b>Name:</b> {{ company.company_name }}</p>
-    <p><b>HR Email:</b> {{ company.hr_email }}</p>
-{% else %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
     <form method="post">
-        <label>
-            <input name="company_name" placeholder="Company Name" required>
-        </label><br><br>
-        <label>
-            <input name="hr_email" placeholder="HR Email" required>
-        </label><br><br>
-        <button type="submit">Save Profile</button>
-    </form>
-{% endif %}
+        <div class="grid grid-2">
+            <div>
+                <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;">Company Information</h3>
+                
+                <div class="form-group">
+                    <label for="company_name">Company Name *</label>
+                    <input
+                        type="text"
+                        id="company_name"
+                        name="company_name"
+                        placeholder="Enter company name"
+                        value="{{ company.company_name if company else '' }}"
+                        required
+                    >
+                </div>
 
+                <div class="form-group">
+                    <label for="company_type">Company Type</label>
+                    <select id="company_type" name="company_type">
+                        <option value="">Select Type</option>
+                        <option value="Startup" {% if company and company.company_type == 'Startup' %}selected{% endif %}>Startup</option>
+                        <option value="SME" {% if company and company.company_type == 'SME' %}selected{% endif %}>SME</option>
+                        <option value="Enterprise" {% if company and company.company_type == 'Enterprise' %}selected{% endif %}>Enterprise</option>
+                        <option value="MNC" {% if company and company.company_type == 'MNC' %}selected{% endif %}>MNC</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="industry">Industry</label>
+                    <input
+                        type="text"
+                        id="industry"
+                        name="industry"
+                        placeholder="e.g., IT, Finance, Healthcare"
+                        value="{{ company.industry if company else '' }}"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="website">Company Website</label>
+                    <input
+                        type="url"
+                        id="website"
+                        name="website"
+                        placeholder="https://www.company.com"
+                        value="{{ company.website if company else '' }}"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea
+                        id="address"
+                        name="address"
+                        placeholder="Company address"
+                        rows="3"
+                    >{{ company.address if company else '' }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Company Description</label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        placeholder="Tell us about your company, culture, and values"
+                        rows="5"
+                    >{{ company.description if company else '' }}</textarea>
+                </div>
+            </div>
+
+            <div>
+                <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;">Contact Information</h3>
+                
+                <div class="form-group">
+                    <label for="hr_email">HR Contact Email *</label>
+                    <input
+                        type="email"
+                        id="hr_email"
+                        name="hr_email"
+                        placeholder="hr@company.com"
+                        value="{{ company.hr_email if company else '' }}"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="hr_phone">HR Contact Phone</label>
+                    <input
+                        type="tel"
+                        id="hr_phone"
+                        name="hr_phone"
+                        placeholder="+91-1234567890"
+                        value="{{ company.hr_phone if company else '' }}"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="logo_url">Company Logo URL</label>
+                    <input
+                        type="url"
+                        id="logo_url"
+                        name="logo_url"
+                        placeholder="Link to company logo image"
+                        value="{{ company.logo_url if company else '' }}"
+                    >
+                </div>
+
+                {% if company and company.logo_url %}
+                <div class="form-group">
+                    <label>Current Logo</label>
+                    <div>
+                        <img src="{{ company.logo_url }}" alt="Company Logo" style="max-width: 200px; border-radius: 8px; border: 2px solid var(--border-color);">
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn btn-primary">Update Profile</button>
+            <a href="{{ url_for('company_routes.company_dashboard') }}" class="btn btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
 {% endblock %}

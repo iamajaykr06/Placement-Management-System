@@ -1,46 +1,163 @@
 {% extends "base.html" %}
+{% block title %}Student Profile - Placement System{% endblock %}
 
 {% block content %}
-<h2>Student Profile</h2>
+<div class="card">
+    <div class="card-header">
+        <h2>Student Profile</h2>
+        <p style="color: var(--text-secondary);">Complete your profile to increase your chances of getting hired</p>
+    </div>
 
-<form method="post">
-    <label>
-        <input
-            name="name"
-            placeholder="Name"
-            value="{{ profile.name }}"
-            required
-        >
-    </label><br><br>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
-    <label>
-        <input
-            name="email"
-            placeholder="Email"
-            value="{{ profile.email }}"
-            required
-        >
-    </label><br><br>
+    <form method="post">
+        <div class="grid grid-2">
+            <div>
+                <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;">Basic Information</h3>
+                
+                <div class="form-group">
+                    <label for="name">Full Name *</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Enter your full name"
+                        value="{{ profile.name if profile else '' }}"
+                        required
+                    >
+                </div>
 
-    <label>
-        <input
-            name="course"
-            placeholder="Course"
-            value="{{ profile.course }}"
-            required
-        >
-    </label><br><br>
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        value="{{ profile.email if profile else '' }}"
+                        required
+                    >
+                </div>
 
-    <label>
-        <input
-            name="cgpa"
-            placeholder="CGPA"
-            value="{{ profile.cgpa }}"
-            required
-        >
-    </label><br><br>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        placeholder="Enter your phone number"
+                        value="{{ profile.phone if profile else '' }}"
+                    >
+                </div>
 
-    <button type="submit">Update Profile</button>
-</form>
+                <div class="form-group">
+                    <label for="course">Course/Program *</label>
+                    <input
+                        type="text"
+                        id="course"
+                        name="course"
+                        placeholder="e.g., Computer Science, Mechanical Engineering"
+                        value="{{ profile.course if profile else '' }}"
+                        required
+                    >
+                </div>
 
+                <div class="form-group">
+                    <label for="year_of_study">Year of Study</label>
+                    <select id="year_of_study" name="year_of_study">
+                        <option value="">Select Year</option>
+                        <option value="1" {% if profile and profile.year_of_study == 1 %}selected{% endif %}>1st Year</option>
+                        <option value="2" {% if profile and profile.year_of_study == 2 %}selected{% endif %}>2nd Year</option>
+                        <option value="3" {% if profile and profile.year_of_study == 3 %}selected{% endif %}>3rd Year</option>
+                        <option value="4" {% if profile and profile.year_of_study == 4 %}selected{% endif %}>4th Year</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="cgpa">CGPA *</label>
+                    <input
+                        type="number"
+                        id="cgpa"
+                        name="cgpa"
+                        placeholder="Enter your CGPA (0-10)"
+                        value="{{ profile.cgpa if profile else '' }}"
+                        min="0"
+                        max="10"
+                        step="0.01"
+                        required
+                    >
+                </div>
+            </div>
+
+            <div>
+                <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;">Professional Details</h3>
+                
+                <div class="form-group">
+                    <label for="skills">Skills</label>
+                    <textarea
+                        id="skills"
+                        name="skills"
+                        placeholder="List your skills separated by commas (e.g., Python, Java, React, SQL)"
+                        rows="4"
+                    >{{ profile.skills if profile else '' }}</textarea>
+                    <small style="color: var(--text-secondary);">Separate skills with commas</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="bio">Bio/About Me</label>
+                    <textarea
+                        id="bio"
+                        name="bio"
+                        placeholder="Tell us about yourself, your interests, and career goals"
+                        rows="5"
+                    >{{ profile.bio if profile else '' }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="linkedin_url">LinkedIn Profile URL</label>
+                    <input
+                        type="url"
+                        id="linkedin_url"
+                        name="linkedin_url"
+                        placeholder="https://linkedin.com/in/yourprofile"
+                        value="{{ profile.linkedin_url if profile else '' }}"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="github_url">GitHub Profile URL</label>
+                    <input
+                        type="url"
+                        id="github_url"
+                        name="github_url"
+                        placeholder="https://github.com/yourusername"
+                        value="{{ profile.github_url if profile else '' }}"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="resume_url">Resume URL</label>
+                    <input
+                        type="url"
+                        id="resume_url"
+                        name="resume_url"
+                        placeholder="Link to your resume (Google Drive, Dropbox, etc.)"
+                        value="{{ profile.resume_url if profile else '' }}"
+                    >
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn btn-primary">Save Profile</button>
+            <a href="{{ url_for('student_routes.student_dashboard') }}" class="btn btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
 {% endblock %}

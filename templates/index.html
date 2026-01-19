@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Management System - Connect Students with Opportunities</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .animate-fade-in {
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .animate-slide-in {
+            animation: slideInRight 0.8s ease-out;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8rem 2rem 6rem;
+            text-align: center;
+            margin-bottom: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+            opacity: 0.3;
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .hero-btn {
+            padding: 1.2rem 3rem;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            transition: all 0.3s;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .hero-btn-primary {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .hero-btn-primary:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .hero-btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            backdrop-filter: blur(10px);
+        }
+        
+        .hero-btn-secondary:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-5px) scale(1.05);
+        }
+        
+        .stats-bar {
+            background: white;
+            padding: 3rem 2rem;
+            margin-top: -4rem;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
+            border-radius: 30px 30px 0 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            transition: transform 0.3s;
+        }
+        
+        .stat-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        
+        .features {
+            padding: 6rem 2rem;
+            background: var(--bg-color);
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .section-header h2 {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .section-header p {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .feature-card {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.4s;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+        
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 40px rgba(79, 70, 229, 0.2);
+            border-color: var(--primary-color);
+        }
+        
+        .feature-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+        }
+        
+        .feature-card:nth-child(2) .feature-icon {
+            animation-delay: 0.5s;
+        }
+        
+        .feature-card:nth-child(3) .feature-icon {
+            animation-delay: 1s;
+        }
+        
+        .feature-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+        
+        .feature-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+        
+        .feature-list {
+            text-align: left;
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.75rem 0;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+            transition: color 0.3s;
+        }
+        
+        .feature-list li:hover {
+            color: var(--primary-color);
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-list li::before {
+            content: "✓ ";
+            color: var(--secondary-color);
+            font-weight: bold;
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .how-it-works {
+            padding: 6rem 2rem;
+            background: white;
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 3rem auto 0;
+        }
+        
+        .step {
+            text-align: center;
+            padding: 2rem;
+            transition: transform 0.3s;
+        }
+        
+        .step:hover {
+            transform: translateY(-10px);
+        }
+        
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        }
+        
+        .step h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .step p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 6s ease-in-out infinite;
+        }
+        
+        .cta-section > * {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cta-section h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+        
+        .cta-section p {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            opacity: 0.95;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-btn {
+            padding: 1.2rem 3rem;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .cta-btn-white {
+            background: white;
+            color: var(--primary-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .cta-btn-white:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .cta-btn-outline {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+        
+        .cta-btn-outline:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-5px) scale(1.05);
+        }
+        
+        footer {
+            background: var(--text-primary);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+            font-weight: 500;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .section-header h2 {
+                font-size: 2rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/" style="font-size: 1.25rem; font-weight: 700;">🎓 Placement System</a>
+            <a href="{{ url_for('auth_routes.login') }}">Login</a>
+            <a href="{{ url_for('auth_routes.register_student') }}">Register as Student</a>
+            <a href="{{ url_for('auth_routes.register_company') }}">Register as Company</a>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <div class="hero-content container animate-fade-in">
+            <h1>Your Career Journey Starts Here</h1>
+            <p>Connect talented students with leading companies. Streamline placements, discover opportunities, and build your future with our comprehensive platform.</p>
+            <div class="hero-buttons">
+                <a href="{{ url_for('auth_routes.register_student') }}" class="btn hero-btn hero-btn-primary">
+                    🚀 Get Started as Student
+                </a>
+                <a href="{{ url_for('auth_routes.register_company') }}" class="btn hero-btn hero-btn-secondary">
+                    💼 Post Jobs as Company
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">500+</div>
+                <div class="stat-label">Active Students</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">100+</div>
+                <div class="stat-label">Partner Companies</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">1000+</div>
+                <div class="stat-label">Job Opportunities</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">85%</div>
+                <div class="stat-label">Placement Rate</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="features">
+        <div class="container">
+            <div class="section-header animate-fade-in">
+                <h2>Why Choose Our Platform?</h2>
+                <p>A comprehensive solution designed to make placement management seamless and efficient</p>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card animate-fade-in">
+                    <div class="feature-icon">🎓</div>
+                    <h3>For Students</h3>
+                    <p>Your gateway to career opportunities. Browse, apply, and track your journey to success.</p>
+                    <ul class="feature-list">
+                        <li>Browse active job postings</li>
+                        <li>One-click application process</li>
+                        <li>Real-time application tracking</li>
+                        <li>Complete profile management</li>
+                        <li>Get matched with opportunities</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card animate-fade-in">
+                    <div class="feature-icon">🏢</div>
+                    <h3>For Companies</h3>
+                    <p>Find the perfect talent for your organization. Streamline hiring and manage applications effortlessly.</p>
+                    <ul class="feature-list">
+                        <li>Post job opportunities easily</li>
+                        <li>View detailed applicant profiles</li>
+                        <li>Manage applications efficiently</li>
+                        <li>Track hiring pipeline</li>
+                        <li>Access to qualified candidates</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card animate-fade-in">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Fast & Reliable</h3>
+                    <p>Built for speed and efficiency. Experience seamless performance with cutting-edge technology.</p>
+                    <ul class="feature-list">
+                        <li>Lightning-fast interface</li>
+                        <li>Real-time notifications</li>
+                        <li>Bank-level security</li>
+                        <li>24/7 platform availability</li>
+                        <li>Mobile-responsive design</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="how-it-works">
+        <div class="container">
+            <div class="section-header animate-fade-in">
+                <h2>How It Works</h2>
+                <p>Get started in just a few simple steps</p>
+            </div>
+
+            <div class="steps">
+                <div class="step animate-slide-in">
+                    <div class="step-number">1</div>
+                    <h4>Create Account</h4>
+                    <p>Sign up as a student or company. It takes less than 2 minutes!</p>
+                </div>
+                <div class="step animate-slide-in">
+                    <div class="step-number">2</div>
+                    <h4>Complete Profile</h4>
+                    <p>Add your details, skills, and preferences to get personalized matches.</p>
+                </div>
+                <div class="step animate-slide-in">
+                    <div class="step-number">3</div>
+                    <h4>Explore Opportunities</h4>
+                    <p>Browse jobs or post openings. Find the perfect match for your needs.</p>
+                </div>
+                <div class="step animate-slide-in">
+                    <div class="step-number">4</div>
+                    <h4>Connect & Succeed</h4>
+                    <p>Apply, get hired, or find talent. Start your journey to success!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cta-section">
+        <div class="container">
+            <h2>Ready to Transform Your Career?</h2>
+            <p>Join thousands of students and companies already using our platform to achieve their goals</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('auth_routes.register_student') }}" class="btn cta-btn cta-btn-white">
+                    Start as Student
+                </a>
+                <a href="{{ url_for('auth_routes.register_company') }}" class="btn cta-btn cta-btn-white">
+                    Start as Company
+                </a>
+                <a href="{{ url_for('auth_routes.login') }}" class="btn cta-btn cta-btn-outline">
+                    Already Registered? Login
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="{{ url_for('auth_routes.login') }}">Login</a>
+                <a href="{{ url_for('auth_routes.register_student') }}">For Students</a>
+                <a href="{{ url_for('auth_routes.register_company') }}">For Companies</a>
+            </div>
+            <p>&copy; 2024 Placement Management System. All rights reserved.</p>
+            <p style="margin-top: 1rem; opacity: 0.7; font-size: 0.9rem;">
+                Connecting talent with opportunity | Built with ❤️ for better placements
+            </p>
+        </div>
+    </footer>
+
+    <!-- Chatbot -->
+    <script src="{{ url_for('static', filename='chatbot.js') }}"></script>
+</body>
+</html>

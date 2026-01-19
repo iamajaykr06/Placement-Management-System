@@ -1,32 +1,270 @@
 <!DOCTYPE html>
-<html lang ="en">
+<html lang="en">
 <head>
-    <title>Student Registration</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration - Placement System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .auth-container {
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .auth-card {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .auth-card h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .auth-card .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem 1.25rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+        
+        .password-requirements {
+            background: #f3f4f6;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .password-requirements ul {
+            list-style: none;
+            padding: 0;
+            margin: 0.5rem 0 0 0;
+        }
+        
+        .password-requirements li {
+            padding: 0.25rem 0;
+        }
+        
+        .password-requirements li::before {
+            content: "• ";
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+        
+        .auth-links {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .auth-links p {
+            color: var(--text-secondary);
+        }
+        
+        .auth-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .auth-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .password-strength {
+            height: 4px;
+            background: var(--border-color);
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s;
+            border-radius: 2px;
+        }
+        
+        .password-strength-bar.weak {
+            width: 33%;
+            background: var(--danger-color);
+        }
+        
+        .password-strength-bar.medium {
+            width: 66%;
+            background: var(--warning-color);
+        }
+        
+        .password-strength-bar.strong {
+            width: 100%;
+            background: var(--secondary-color);
+        }
+    </style>
 </head>
 <body>
+    <nav>
+        <div class="container">
+            <a href="/" style="font-size: 1.25rem; font-weight: 700;">🎓 Placement System</a>
+            <a href="{{ url_for('auth_routes.login') }}">Login</a>
+            <a href="{{ url_for('auth_routes.register_company') }}">Register as Company</a>
+        </div>
+    </nav>
 
-<h2>Student Registration</h2>
+    <div class="auth-container">
+        <div class="auth-card">
+            <h2>Student Registration</h2>
+            <p class="subtitle">Start your career journey with us</p>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
 
-<form method="post">
-    <label>Username</label><br>
-    <label>
-        <input type="text" name="username" required>
-    </label><br><br>
+            <form method="post" id="registerForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input 
+                        type="text" 
+                        id="username"
+                        name="username" 
+                        placeholder="Choose a username (3-30 characters)" 
+                        required
+                        autofocus
+                        minlength="3"
+                        maxlength="30"
+                        pattern="[a-zA-Z0-9_-]+"
+                    >
+                    <small style="color: var(--text-secondary); font-size: 0.85rem;">
+                        Only letters, numbers, underscore, and hyphen
+                    </small>
+                </div>
 
-    <label>Email</label><br>
-    <label>
-        <input type="email" name="email" required>
-    </label><br><br>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email"
+                        name="email" 
+                        placeholder="Enter your email" 
+                        required
+                    >
+                </div>
 
-    <label>Password</label><br>
-    <label>
-        <input type="password" name="password" required>
-    </label><br><br>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input 
+                        type="password" 
+                        id="password"
+                        name="password" 
+                        placeholder="Create a password" 
+                        required
+                        minlength="6"
+                        oninput="checkPasswordStrength(this.value)"
+                    >
+                    <div class="password-strength">
+                        <div class="password-strength-bar" id="passwordStrength"></div>
+                    </div>
+                    <div class="password-requirements">
+                        <strong>Password Requirements:</strong>
+                        <ul>
+                            <li>At least 6 characters</li>
+                            <li>Must contain at least one letter</li>
+                        </ul>
+                    </div>
+                </div>
 
-    <button type="submit">Register</button>
-</form>
+                <button type="submit" class="btn btn-primary">Create Account</button>
+            </form>
 
-<a href="{{ url_for('auth_routes.login') }}">Login</a>
+            <div class="auth-links">
+                <p>Already have an account? <a href="{{ url_for('auth_routes.login') }}">Login here</a></p>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        function checkPasswordStrength(password) {
+            const strengthBar = document.getElementById('passwordStrength');
+            let strength = 0;
+            
+            if (password.length >= 6) strength++;
+            if (password.length >= 8) strength++;
+            if (/[a-zA-Z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength++;
+            
+            strengthBar.className = 'password-strength-bar';
+            
+            if (strength <= 2) {
+                strengthBar.classList.add('weak');
+            } else if (strength <= 3) {
+                strengthBar.classList.add('medium');
+            } else {
+                strengthBar.classList.add('strong');
+            }
+        }
+    </script>
+    <script src="{{ url_for('static', filename='chatbot.js') }}"></script>
 </body>
 </html>

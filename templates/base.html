@@ -2,26 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Placement System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Placement Management System{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <!-- Chatbot will be added here -->
 
 <nav>
-    {% if session.get("role") == "admin" %}
-        <a href="{{ url_for('admin_routes.admin_dashboard') }}">Dashboard</a>
-    {% elif session.get("role") == "company" %}
-        <a href="{{ url_for('company_routes.company_dashboard') }}">Dashboard</a>
-    {% elif session.get("role") == "student" %}
-        <a href="{{ url_for('student_routes.student_dashboard') }}">Dashboard</a>
-    {% endif %}
-
-    |
-    <a href="{{ url_for('auth_routes.logout') }}">Logout</a>
+    <div class="container">
+        <a href="/" style="font-size: 1.25rem; font-weight: 700;">Placement System</a>
+        {% if session.get("role") == "admin" %}
+            <a href="{{ url_for('admin_routes.admin_dashboard') }}">Dashboard</a>
+        {% elif session.get("role") == "company" %}
+            <a href="{{ url_for('company_routes.company_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('company_routes.post_job') }}">Post Job</a>
+            <a href="{{ url_for('company_routes.company_profile') }}">Profile</a>
+        {% elif session.get("role") == "student" %}
+            <a href="{{ url_for('student_routes.student_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('student_routes.view_jobs') }}">Jobs</a>
+            <a href="{{ url_for('student_routes.my_applications') }}">Applications</a>
+            <a href="{{ url_for('student_routes.student_profile') }}">Profile</a>
+        {% endif %}
+        {% if session.get("user_id") %}
+            <a href="{{ url_for('auth_routes.logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('auth_routes.login') }}">Login</a>
+        {% endif %}
+    </div>
 </nav>
 
-<hr>
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
-{% block content %}{% endblock %}
+    {% block content %}{% endblock %}
+</div>
+
+<!-- Chatbot -->
+<script src="{{ url_for('static', filename='chatbot.js') }}"></script>
 
 </body>
 </html>

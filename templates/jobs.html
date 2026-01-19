@@ -1,29 +1,70 @@
 {% extends "base.html" %}
+{% block title %}Available Jobs - Placement System{% endblock %}
 
 {% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Available Jobs</h2>
+        <p style="color: var(--text-secondary);">Browse and apply for job opportunities</p>
+    </div>
 
-<h2>Available Jobs</h2>
-
-{% if jobs %}
-<table border="1" cellpadding="8">
-    <tr>
-        <th>Job Title</th>
-        <th>Eligibility</th>
-        <th>Action</th>
-    </tr>
-
-    {% for job in jobs %}
-    <tr>
-        <td>{{ job.title }}</td>
-        <td>{{ job.eligibility }}</td>
-        <td>
-            <a href="/apply/{{ job.id }}">Apply</a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-{% else %}
-<p>No jobs available at the moment.</p>
-{% endif %}
-
+    {% if jobs %}
+        {% for job in jobs %}
+        <div class="job-card">
+            <div class="flex-between" style="margin-bottom: 1rem;">
+                <div>
+                    <h3>{{ job.title }}</h3>
+                    {% if job.company_name %}
+                    <p class="company-name">Company: {{ job.company_name }}</p>
+                    {% endif %}
+                </div>
+                <div>
+                    {% if job.job_type %}
+                    <span class="badge badge-info">{{ job.job_type|title }}</span>
+                    {% endif %}
+                    {% if job.location %}
+                    <span class="badge badge-info">📍 {{ job.location }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if job.description %}
+            <div class="description">
+                <strong>Description:</strong>
+                <p>{{ job.description[:200] }}{% if job.description|length > 200 %}...{% endif %}</p>
+            </div>
+            {% endif %}
+            
+            {% if job.eligibility %}
+            <div class="eligibility" style="margin-top: 0.5rem;">
+                <strong>Eligibility:</strong> {{ job.eligibility }}
+            </div>
+            {% endif %}
+            
+            {% if job.salary_min and job.salary_max %}
+            <div style="margin-top: 0.5rem;">
+                <strong>Salary:</strong> {{ job.salary_min }} - {{ job.salary_max }} {{ job.currency|default('INR') }} LPA
+            </div>
+            {% endif %}
+            
+            {% if job.application_deadline %}
+            <div style="margin-top: 0.5rem; color: var(--text-secondary);">
+                <strong>Deadline:</strong> {{ job.application_deadline }}
+            </div>
+            {% endif %}
+            
+            <div style="margin-top: 1rem;">
+                <a href="{{ url_for('student_routes.apply_job', job_id=job.id) }}" class="btn btn-primary">
+                    View Details & Apply
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <p style="font-size: 1.25rem; margin-bottom: 0.5rem;">No jobs available at the moment</p>
+            <p style="color: var(--text-secondary);">Check back later for new opportunities</p>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

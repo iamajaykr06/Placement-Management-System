@@ -1,16 +1,90 @@
 {% extends "base.html" %}
+{% block title %}Apply for Job - Placement System{% endblock %}
 
 {% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Apply for Job</h2>
+        <p style="color: var(--text-secondary);">Review job details and submit your application</p>
+    </div>
 
-<h2>Apply for Job</h2>
+    {% if job %}
+    <div class="job-card" style="margin-bottom: 2rem;">
+        <div class="flex-between" style="margin-bottom: 1rem;">
+            <div>
+                <h3>{{ job.title }}</h3>
+                {% if job.company_name %}
+                <p class="company-name">Company: {{ job.company_name }}</p>
+                {% endif %}
+                {% if job.industry %}
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">Industry: {{ job.industry }}</p>
+                {% endif %}
+            </div>
+            <div>
+                {% if job.job_type %}
+                <span class="badge badge-info">{{ job.job_type|title }}</span>
+                {% endif %}
+                {% if job.location %}
+                <span class="badge badge-info" style="margin-left: 0.5rem;">📍 {{ job.location }}</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if job.description %}
+        <div class="description">
+            <strong>Job Description:</strong>
+            <p>{{ job.description }}</p>
+        </div>
+        {% endif %}
+        
+        {% if job.requirements %}
+        <div class="description" style="margin-top: 1rem;">
+            <strong>Requirements:</strong>
+            <p>{{ job.requirements }}</p>
+        </div>
+        {% endif %}
+        
+        {% if job.eligibility %}
+        <div class="eligibility" style="margin-top: 1rem;">
+            <strong>Eligibility Requirements:</strong> {{ job.eligibility }}
+        </div>
+        {% endif %}
+        
+        {% if job.salary_min and job.salary_max %}
+        <div style="margin-top: 1rem; padding: 1rem; background: #f3f4f6; border-radius: 8px;">
+            <strong>💰 Salary Range:</strong> {{ job.salary_min }} - {{ job.salary_max }} {{ job.currency|default('INR') }} LPA
+        </div>
+        {% endif %}
+        
+        {% if job.location %}
+        <div style="margin-top: 0.5rem;">
+            <strong>📍 Location:</strong> {{ job.location }}
+        </div>
+        {% endif %}
+        
+        {% if job.application_deadline %}
+        <div style="margin-top: 0.5rem; color: var(--warning-color);">
+            <strong>⏰ Application Deadline:</strong> {{ job.application_deadline }}
+        </div>
+        {% endif %}
+    </div>
 
-<p><strong>Job Title:</strong> {{ job.title }}</p>
-<p><strong>Eligibility:</strong> {{ job.eligibility }}</p>
-
-<form method="POST">
-    <button type="submit">Confirm Apply</button>
-</form>
-
-<a href="{{ url_for('student_routes.view_jobs') }}">Back to Jobs</a>
-
+    <form method="POST">
+        <div class="alert alert-info">
+            <strong>Confirm Application</strong><br>
+            By clicking "Submit Application", you confirm that you meet the eligibility requirements and wish to apply for this position.
+        </div>
+        
+        <div style="display: flex; gap: 1rem;">
+            <button type="submit" class="btn btn-primary">Submit Application</button>
+            <a href="{{ url_for('student_routes.view_jobs') }}" class="btn btn-outline">Cancel</a>
+        </div>
+    </form>
+    {% else %}
+    <div class="alert alert-error">
+        Job not found or no longer available.
+    </div>
+    <a href="{{ url_for('student_routes.view_jobs') }}" class="btn btn-primary">Back to Jobs</a>
+    {% endif %}
+</div>
 {% endblock %}
